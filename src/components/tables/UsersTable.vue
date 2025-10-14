@@ -34,7 +34,7 @@ window.initUsersTable = function (emit) {
         if (token) xhr.setRequestHeader('Authorization', `Bearer ${token}`)
       },
       dataSrc: function (json) {
-        console.log('Response:', json)
+        // console.log('Response:', json)
         return json
       },
       error: function (xhr, error, thrown) {

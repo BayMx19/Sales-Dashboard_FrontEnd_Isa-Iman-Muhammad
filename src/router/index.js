@@ -4,6 +4,7 @@ import Register from '../views/auth/RegisterView.vue'
 import Dashboard from '../views/DashboardView.vue'
 
 const routes = [
+  { path: '/', redirect: '/login' },
   { path: '/login', name: 'login', component: Login },
   { path: '/register', name: 'register', component: Register },
   {

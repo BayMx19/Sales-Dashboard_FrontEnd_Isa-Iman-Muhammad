@@ -6,54 +6,132 @@
         <div class="container-fluid">
           <div class="row">
             <div class="col-12">
-              <div class="page-title-box">
-                <div class="page-title-right">
-                  <ol class="breadcrumb m-0">
-                    <li class="breadcrumb-item"><a href="javascript: void(0);">Transaksi </a></li>
-                    <li class="breadcrumb-item active">Data Transaksi</li>
-                  </ol>
+              <div
+                class="page-title-box d-flex justify-content-between align-items-center flex-wrap gap-2"
+              >
+                <div>
+                  <h4 class="page-title color-black mb-0">Data Transaksi</h4>
                 </div>
-                <h4 class="page-title color-black">Data Transaksi</h4>
+                <div class="d-flex gap-2">
+                  <button class="btn btn-success" @click="openImportModal">
+                    <i class="mdi mdi-upload"></i> Import Excel
+                  </button>
+                  <button class="btn btn-info text-white" @click="openExportModal">
+                    <i class="mdi mdi-download"></i> Export Data
+                  </button>
+                  <button class="btn btn-primary" @click="openAddModal">
+                    <i class="mdi mdi-plus"></i> Tambah Transaksi
+                  </button>
+                </div>
               </div>
             </div>
           </div>
-          <div class="row">
-            <div class="col-12">
-              <div class="card">
-                <div class="card-body">
-                  <table
-                    id="basic-datatable"
-                    class="table table-striped dt-responsive nowrap w-100"
-                  >
-                    <thead>
-                      <tr>
-                        <th>Name</th>
-                        <th>Position</th>
-                        <th>Office</th>
-                        <th>Age</th>
-                        <th>Start date</th>
-                        <th>Salary</th>
-                      </tr>
-                    </thead>
 
-                    <tbody></tbody>
-                  </table>
-                </div>
-                <!-- end card body-->
-              </div>
-              <!-- end card -->
-            </div>
-            <!-- end col-->
+          <div v-if="alertMessage" class="alert mt-3" :class="alertClass" role="alert">
+            {{ alertMessage }}
           </div>
+
+          <div class="row mt-3">
+            <div class="col-12">
+              <TransactionsTable @edit="openEditModal" @delete="deleteTransaction" />
+            </div>
+          </div>
+
           <FooterView />
         </div>
       </div>
     </div>
   </div>
+
   <RightSidebarView />
+
+  <!-- Modal tambah/edit transaksi -->
+  <TransactionFormModal
+    v-if="showModal"
+    :editData="selectedTransaction"
+    @close="closeModal"
+    @refresh="handleRefresh"
+  />
+
+  <!-- Modal import excel -->
+  <TransactionImportModal
+    v-if="showImportModal"
+    @close="closeImportModal"
+    @refresh="handleRefresh"
+  />
+
+  <!-- Modal export data -->
+  <TransactionExportModal v-if="showExportModal" @close="closeExportModal" />
 </template>
+
 <script setup>
+import { ref } from 'vue'
+import api from '@/assets/js/api/api.js'
 import MenuView from '@/components/layouts/MenuView.vue'
 import FooterView from '@/components/layouts/FooterView.vue'
 import RightSidebarView from '@/components/layouts/RightSidebarView.vue'
+import TransactionsTable from '@/components/tables/TransactionsTable.vue'
+import TransactionFormModal from '@/components/modals/TransactionFormModal.vue'
+import TransactionImportModal from '@/components/modals/TransactionImportModal.vue'
+import TransactionExportModal from '@/components/modals/TransactionExportModal.vue'
+
+const showModal = ref(false)
+const showImportModal = ref(false)
+const showExportModal = ref(false)
+const selectedTransaction = ref(null)
+const alertMessage = ref('')
+const alertClass = ref('alert-success')
+
+const showAlert = (message, type = 'success') => {
+  alertMessage.value = message
+  alertClass.value = type === 'error' ? 'alert-danger' : 'alert-success'
+  setTimeout(() => {
+    alertMessage.value = ''
+  }, 3000)
+}
+
+const openAddModal = () => {
+  selectedTransaction.value = null
+  showModal.value = true
+}
+
+const openEditModal = (transaction) => {
+  selectedTransaction.value = transaction
+  showModal.value = true
+}
+
+const closeModal = () => (showModal.value = false)
+
+const openImportModal = () => (showImportModal.value = true)
+const closeImportModal = () => (showImportModal.value = false)
+
+const openExportModal = () => (showExportModal.value = true)
+const closeExportModal = () => (showExportModal.value = false)
+
+const refreshTable = () => {
+  window.dispatchEvent(new Event('refreshTransactionsTable'))
+}
+
+const handleRefresh = () => {
+  refreshTable()
+  showAlert(
+    selectedTransaction.value
+      ? 'Transaksi berhasil diperbarui!'
+      : 'Transaksi berhasil ditambahkan!',
+  )
+  closeModal()
+}
+
+const deleteTransaction = async (id) => {
+  if (confirm('Yakin ingin menghapus transaksi ini?')) {
+    try {
+      await api.delete(`/transactions/${id}`)
+      refreshTable()
+      showAlert('Transaksi berhasil dihapus!')
+    } catch (error) {
+      console.error(error)
+      showAlert('Gagal menghapus transaksi', 'error')
+    }
+  }
+}
 </script>

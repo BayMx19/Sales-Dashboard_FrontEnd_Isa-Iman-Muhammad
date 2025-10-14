@@ -62,7 +62,7 @@ body {
   height: 100%;
   width: 100%;
   color: var(--color-text);
-  background-color: #f8f9fa;
+  background-color: #f2f2f7;
   overflow-y: scroll !important;
   transition:
     color 0.5s,
@@ -74,3 +74,4 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+

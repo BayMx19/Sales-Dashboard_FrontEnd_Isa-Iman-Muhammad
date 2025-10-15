@@ -61,7 +61,7 @@
 
         <li class="side-nav-title">Master</li>
 
-        <li class="side-nav-item">
+        <li class="side-nav-item" v-if="isAdmin">
           <a href="/master-users" class="side-nav-link">
             <i class="ri-group-line"></i>
             <span> Users </span>
@@ -115,7 +115,8 @@ import { useRouter } from 'vue-router'
 import api from '@/assets/js/api/api.js'
 
 const router = useRouter()
-
+const userRole = localStorage.getItem('role')
+const isAdmin = userRole === 'Admin'
 const handleLogout = async () => {
   try {
     const token = localStorage.getItem('token')

@@ -62,33 +62,30 @@ const fetchDashboard = async () => {
   try {
     const token = localStorage.getItem('token')
 
-    // KPI
     const resKpi = await api.get('/dashboard/kpi', {
       headers: { Authorization: `Bearer ${token}` },
     })
     kpi.value = resKpi.data.data
 
-    // Revenue vs Sales
     const resRevenue = await api.get('/dashboard/revenue-sales', {
       headers: { Authorization: `Bearer ${token}` },
     })
     revenueSales.value = resRevenue.data.data
 
-    // Sales by Channel
     const resChannel = await api.get('/dashboard/sales-channel', {
       headers: { Authorization: `Bearer ${token}` },
     })
     salesByChannel.value = resChannel.data.data
 
-    // Top Products
     const resTop = await api.get('/dashboard/top-products', {
       headers: { Authorization: `Bearer ${token}` },
     })
     topProducts.value = resTop.data.data
-    console.log('KPI:', resKpi.data.data)
-    console.log('RevenueSales:', resRevenue.data.data)
-    console.log('SalesByChannel:', resChannel.data.data)
-    console.log('TopProducts:', resTop.data.data)
+
+    // console.log('KPI:', resKpi.data.data)
+    // console.log('RevenueSales:', resRevenue.data.data)
+    // console.log('SalesByChannel:', resChannel.data.data)
+    // console.log('TopProducts:', resTop.data.data)
   } catch (err) {
     console.error(err)
   }

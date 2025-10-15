@@ -12,7 +12,7 @@
                 <div>
                   <h4 class="page-title color-black mb-0">Data Transaksi</h4>
                 </div>
-                <div class="d-flex gap-2">
+                <div class="d-flex gap-2" v-if="isAdmin">
                   <button class="btn btn-success" @click="openImportModal">
                     <i class="mdi mdi-upload"></i> Import Excel
                   </button>
@@ -31,7 +31,11 @@
 
           <div class="row mt-3">
             <div class="col-12">
-              <TransactionsTable @edit="openEditModal" @delete="deleteTransaction" />
+              <TransactionsTable
+                @edit="openEditModal"
+                @delete="deleteTransaction"
+                :is-admin="isAdmin"
+              />
             </div>
           </div>
 
@@ -44,7 +48,7 @@
   <RightSidebarView />
 
   <TransactionFormModal
-    v-if="showModal"
+    v-if="showModal && isAdmin"
     :editData="selectedTransaction"
     @close="closeModal"
     @refresh="handleRefresh"
@@ -52,14 +56,14 @@
 
   <!-- Modal import excel -->
   <TransactionImportModal
-    v-if="showImportModal"
+    v-if="showImportModal && isAdmin"
     @close="closeImportModal"
     @refresh="handleRefresh"
   />
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import api from '@/assets/js/api/api.js'
 import MenuView from '@/components/layouts/MenuView.vue'
 import FooterView from '@/components/layouts/FooterView.vue'
@@ -73,6 +77,11 @@ const showImportModal = ref(false)
 const selectedTransaction = ref(null)
 const alertMessage = ref('')
 const alertClass = ref('alert-success')
+
+// role check
+const userRole = localStorage.getItem('role')
+const isAdmin = computed(() => userRole === 'Admin')
+// console.log('User Role:', userRole)
 
 const showAlert = (message, type = 'success') => {
   alertMessage.value = message
@@ -112,6 +121,7 @@ const handleRefresh = () => {
 }
 
 const deleteTransaction = async (id) => {
+  if (!isAdmin.value) return
   if (confirm('Yakin ingin menghapus transaksi ini?')) {
     try {
       await api.delete(`/transactions/${id}`)

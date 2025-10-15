@@ -27,6 +27,8 @@ const reloadTable = () => {
 
 window.initTransactionsTable = function (emit) {
   $('#transactions-table').DataTable({
+    serverSide: true,
+    processing: true,
     ajax: {
       url: api.defaults.baseURL + '/transactions',
       type: 'GET',
@@ -34,16 +36,13 @@ window.initTransactionsTable = function (emit) {
         const token = localStorage.getItem('token')
         if (token) xhr.setRequestHeader('Authorization', `Bearer ${token}`)
       },
-      dataSrc: function (json) {
-        return json
-      },
       error: function (xhr, error, thrown) {
         console.error('Ajax Error:', error, xhr.status, xhr.responseText)
       },
     },
     columns: [
       { data: 'product.nama', title: 'Nama Produk' },
-      { data: 'qty_terjual', title: 'Qty Terjual' },
+      { data: 'qty_terjual', title: 'Qty' },
       {
         data: 'total_penjualan',
         title: 'Total Penjualan',
@@ -52,6 +51,8 @@ window.initTransactionsTable = function (emit) {
           return new Intl.NumberFormat('id-ID', {
             style: 'currency',
             currency: 'IDR',
+            minimumFractionDigits: 0,
+            maximumFractionDigits: 0,
           }).format(data)
         },
       },
@@ -60,15 +61,14 @@ window.initTransactionsTable = function (emit) {
       { data: 'customer', title: 'Customer' },
       {
         data: 'tanggal_transaksi',
-        title: 'Tanggal Transaksi',
+        title: 'Tanggal',
         render: (data) => {
           if (!data) return '-'
           const date = new Date(data)
-          return date.toLocaleDateString('id-ID', {
-            day: '2-digit',
-            month: 'long',
-            year: 'numeric',
-          })
+          const day = String(date.getDate()).padStart(2, '0')
+          const month = String(date.getMonth() + 1).padStart(2, '0') // bulan 0-11
+          const year = date.getFullYear()
+          return `${day}-${month}-${year}`
         },
       },
       {
@@ -81,6 +81,8 @@ window.initTransactionsTable = function (emit) {
         `,
       },
     ],
+    pageLength: 10,
+    lengthMenu: [10, 25, 50, 100],
     destroy: true,
     responsive: true,
     order: [[0, 'desc']],

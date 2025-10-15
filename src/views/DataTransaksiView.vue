@@ -16,9 +16,7 @@
                   <button class="btn btn-success" @click="openImportModal">
                     <i class="mdi mdi-upload"></i> Import Excel
                   </button>
-                  <button class="btn btn-info text-white" @click="openExportModal">
-                    <i class="mdi mdi-download"></i> Export Data
-                  </button>
+
                   <button class="btn btn-primary" @click="openAddModal">
                     <i class="mdi mdi-plus"></i> Tambah Transaksi
                   </button>
@@ -45,7 +43,6 @@
 
   <RightSidebarView />
 
-  <!-- Modal tambah/edit transaksi -->
   <TransactionFormModal
     v-if="showModal"
     :editData="selectedTransaction"
@@ -59,9 +56,6 @@
     @close="closeImportModal"
     @refresh="handleRefresh"
   />
-
-  <!-- Modal export data -->
-  <TransactionExportModal v-if="showExportModal" @close="closeExportModal" />
 </template>
 
 <script setup>
@@ -73,11 +67,9 @@ import RightSidebarView from '@/components/layouts/RightSidebarView.vue'
 import TransactionsTable from '@/components/tables/TransactionsTable.vue'
 import TransactionFormModal from '@/components/modals/TransactionFormModal.vue'
 import TransactionImportModal from '@/components/modals/TransactionImportModal.vue'
-import TransactionExportModal from '@/components/modals/TransactionExportModal.vue'
 
 const showModal = ref(false)
 const showImportModal = ref(false)
-const showExportModal = ref(false)
 const selectedTransaction = ref(null)
 const alertMessage = ref('')
 const alertClass = ref('alert-success')
@@ -104,9 +96,6 @@ const closeModal = () => (showModal.value = false)
 
 const openImportModal = () => (showImportModal.value = true)
 const closeImportModal = () => (showImportModal.value = false)
-
-const openExportModal = () => (showExportModal.value = true)
-const closeExportModal = () => (showExportModal.value = false)
 
 const refreshTable = () => {
   window.dispatchEvent(new Event('refreshTransactionsTable'))

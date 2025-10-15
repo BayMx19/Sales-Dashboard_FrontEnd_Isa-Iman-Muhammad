@@ -1,8 +1,8 @@
 <template>
-  <NavBar />
   <LeftSidebar />
+  <NavBar />
 </template>
 <script setup>
-import NavBar from '@/components/layouts/NavbarView.vue'
 import LeftSidebar from '@/components/layouts/LeftSidebarView.vue'
+import NavBar from '@/components/layouts/NavbarView.vue'
 </script>

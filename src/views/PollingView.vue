@@ -5,7 +5,6 @@
     <div class="content-page">
       <div class="content">
         <div class="container-fluid">
-          <!-- Card KPI -->
           <div class="row">
             <div class="col-12">
               <div class="page-title-box d-flex justify-content-between align-items-center">
@@ -40,7 +39,6 @@
             </div>
           </div>
 
-          <!-- Table Top Selling Products -->
           <div class="row mt-1">
             <div class="col-12">
               <PollingTable table-id="top-selling-table" :url="'/top-selling'" :columns="columns" />
@@ -111,6 +109,6 @@ const fetchTopProducts = async () => {
 
 onMounted(() => {
   fetchTopProducts()
-  setInterval(fetchTopProducts, 10000) // polling tiap 10 detik untuk KPI cards
+  setInterval(fetchTopProducts, 10000)
 })
 </script>

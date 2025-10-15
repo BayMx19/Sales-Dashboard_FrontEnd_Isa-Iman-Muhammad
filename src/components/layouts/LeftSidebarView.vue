@@ -1,12 +1,9 @@
 <template>
   <div class="leftside-menu">
     <a href="#" class="logo logo-light">
-      <span class="logo-lg">
-        <img src="/assets/images/logo.png" alt="logo" />
-      </span>
-      <span class="logo-sm">
-        <img src="/assets/images/logo-sm.png" alt="small logo" />
-      </span>
+      <span class="text-white mb-0"
+        ><h3 class="mb-3 mt-3"><b>Sales Dashboard</b></h3></span
+      >
     </a>
 
     <div
@@ -108,12 +105,10 @@
           </a>
         </li>
       </ul>
-      <!--- End Sidemenu -->
 
       <div class="clearfix"></div>
     </div>
   </div>
-  <!-- ========== Left Sidebar End ========== -->
 </template>
 <script setup>
 import { useRouter } from 'vue-router'

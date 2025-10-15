@@ -82,8 +82,8 @@
               />
             </span>
             <span class="d-lg-flex flex-column gap-1 d-none">
-              <h5 class="my-0">Tosha Minner</h5>
-              <h6 class="my-0 fw-normal">Founder</h6>
+              <h5 class="my-0">{{ user.name }}</h5>
+              <h6 class="my-0 fw-normal">{{ user.role }}</h6>
             </span>
           </a>
           <div class="dropdown-menu dropdown-menu-end dropdown-menu-animated profile-dropdown">
@@ -91,7 +91,7 @@
               <h6 class="text-overflow m-0">Welcome !</h6>
             </div>
 
-            <a href="pages-profile.php" class="dropdown-item">
+            <a href="/profile" class="dropdown-item">
               <i class="ri-user-circle-line fs-18 align-middle me-1"></i>
               <span>Profile</span>
             </a>
@@ -106,11 +106,27 @@
     </div>
   </div>
 </template>
+
 <script setup>
+import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import api from '@/assets/js/api/api.js'
 
 const router = useRouter()
+const user = ref({ name: '', role: '' })
+
+const fetchUser = async () => {
+  try {
+    const token = localStorage.getItem('token')
+    if (!token) return
+    const res = await api.get('/profile', {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+    user.value = res.data
+  } catch (err) {
+    console.error('Gagal fetch user:', err)
+  }
+}
 
 const handleLogout = async () => {
   try {
@@ -126,4 +142,6 @@ const handleLogout = async () => {
     console.error('Logout gagal:', err)
   }
 }
+
+onMounted(fetchUser)
 </script>
